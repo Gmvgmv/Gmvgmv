@@ -1,0 +1,47 @@
+import cv2
+import requests
+
+# Function to retrieve live data about Berlin
+def get_live_data():
+    # Use an appropriate API or data source to fetch real-time data about Berlin
+    response = requests.get("https://api.example.com/berlin/live-data")
+    data = response.json()
+    return data
+
+# Function to generate a video frame using the live data
+def generate_video_frame(data):
+    # Use the data to create an image frame
+    # This is just a placeholder example, you would need to customize this based on your specific requirements
+    image = cv2.imread("background_image.jpg")  # Load a background image
+    cv2.putText(image, f"Temperature: {data['temperature']}°C", (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    # Add more data to the image as needed
+
+    return image
+
+# Function to generate the live video
+def generate_live_video():
+    # Create a video writer object
+    video_writer = cv2.VideoWriter('live_video.mp4', cv2.VideoWriter_fourcc(*'MP4V'), 30, (640, 480))
+
+    # Main loop to continuously generate video frames
+    while True:
+        # Fetch live data about Berlin
+        live_data = get_live_data()
+
+        # Generate a video frame using the live data
+        frame = generate_video_frame(live_data)
+
+        # Write the frame to the video file
+        video_writer.write(frame)
+
+        # Display the frame (optional)
+        cv2.imshow('Live Video', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # Press 'q' to exit the video generation
+            break
+
+    # Release resources
+    video_writer.release()
+    cv2.destroyAllWindows()
+
+# Call the function to start generating the live video
+generate_live_video()
